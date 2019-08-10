@@ -20,7 +20,7 @@ public class TileEntityAtomicMultiplier extends TileEntityInventoryReceiver impl
 
 	public int cookTime, active;
 	public int furnaceSpeed = 1000;
-	public static int requiredEnergy = 1500000000;
+	public static long requiredEnergy = 15000000000l; //15 billion -> 15mRF/t
 
 	private static final int[] input = new int[] { 0 };
 	private static final int[] circuits = new int[] { 1, 2, 3, 4, 5, 6, 7 };
@@ -38,7 +38,7 @@ public class TileEntityAtomicMultiplier extends TileEntityInventoryReceiver impl
 		if (this.cookTime > 0) {
 			this.active = 1;
 			this.cookTime++;
-			int energy = requiredEnergy / furnaceSpeed;
+			int energy = (int) getEnergyUsage(); //NOTE - if greater than max int, will be rounded down to max int
 			this.storage.modifyEnergyStored(-energy);
 		}
 		if (this.canCook()) {
@@ -53,7 +53,7 @@ public class TileEntityAtomicMultiplier extends TileEntityInventoryReceiver impl
 				this.cookItem();
 				this.active = 0;
 
-				int energy = requiredEnergy / furnaceSpeed;
+				int energy = (int) getEnergyUsage(); //NOTE - if greater than max int, will be rounded down to max int
 				this.storage.modifyEnergyStored(-energy);
 				this.worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 			}
@@ -218,7 +218,7 @@ public class TileEntityAtomicMultiplier extends TileEntityInventoryReceiver impl
 
 	@Override
 	public double getEnergyUsage() {
-		return requiredEnergy / getProcessTime();
+		return (requiredEnergy * 1.0) / getProcessTime();
 	}
 
 	@Override
