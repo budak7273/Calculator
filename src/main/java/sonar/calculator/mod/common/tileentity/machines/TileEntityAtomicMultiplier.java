@@ -71,46 +71,49 @@ public class TileEntityAtomicMultiplier extends TileEntityInventoryReceiver impl
 	}
 
 	public boolean canCook() {
-		if (this.storage.getEnergyStored() == 0) {
+		if (this.storage.getEnergyStored() == 0) { //must have energy
 			return false;
 		}
-		for (int i = 0; i < 8; i++) {
+		for (int i = 0; i < 8; i++) { //all 8 slots must be occupied
 			if (slots[i] == null) {
 				return false;
 			}
 		}
-		if (!isAllowed(slots[0])) {
+		if (!isAllowed(slots[0])) { //the first item must be allowed in the slot
 			return false;
 		}
 
-		if (slots[8] != null) {
+		if (slots[8] != null) { //has 8 items
 			if (slots[8].stackSize + 4 > 64) {
 				return false;
 			}
-			if (!slots[0].isItemEqual(slots[8])) {
+			if (!slots[0].isItemEqual(slots[8])) { //8 items must be the same
 				return false;
 			}
 		}
 
-		if (cookTime == 0) {
-			if (this.storage.getEnergyStored() < requiredEnergy) {
+		if (cookTime == 0) { //has not yet begun producing a new round
+			/*if (this.storage.getEnergyStored() < requiredEnergy) { //require full buffer to begin process
+				return false;
+			}*/
+			if (this.storage.getEnergyStored() < getEnergyUsage()) { //require at least one operation of energy to start
 				return false;
 			}
 		}
-		if (!(slots[0].getMaxStackSize() >= 4)) {
+		if (!(slots[0].getMaxStackSize() >= 4)) { //don't allow producing stacks if 4 is greater than the stack size
 			return false;
 		}
 
-		for (int i = 1; i < 8; i++) {
+		for (int i = 1; i < 8; i++) { //verify that items are circuits
 			if (slots[i].getItem() != Calculator.circuitBoard) {
 				return false;
 			}
 		}
 
-		if (cookTime >= furnaceSpeed) {
+		if (cookTime >= furnaceSpeed) { //if done cooking
 			return true;
 		}
-		return true;
+		return true; //base case of yes
 
 	}
 
