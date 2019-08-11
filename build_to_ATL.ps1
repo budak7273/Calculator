@@ -5,5 +5,5 @@ get-item -path .\build\libs\*.jar | copy-item -destination E:\Users\Rob\Desktop\
 #copy-item -path .\build\libs\*.jar -destination E:\Users\Rob\Desktop\ATLauncher\instances\VanillaMinecraftwithForge\mods #.\build\libs\testDir 
 "Done."
 
-
+[console]::beep(500,125)
 pause
