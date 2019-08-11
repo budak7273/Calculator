@@ -152,7 +152,7 @@ public class CalculatorConfig extends Calculator {
 		addInteger("Processing Chamber", "Base Speed", 500, 20, 10000, true);		
 		
 		addLong(multiplierTotalEnergyMsg, multiplierCategory, 1500000000, 1, Long.MAX_VALUE, true);
-		addLong(multiplierProcessTimeMsg, multiplierCategory, 1000, 20, 50000, true);
+		addInteger(multiplierProcessTimeMsg, multiplierCategory, 1000, 20, 50000, true);
 		addInteger(multiplierEnergyStorageMsg, multiplierCategory, 1500000000, 1, Integer.MAX_VALUE, false);
 	}
 
