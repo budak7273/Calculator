@@ -19,7 +19,9 @@ import cpw.mods.fml.common.registry.GameRegistry;
 public class CalculatorConfig extends Calculator {
 
 	private static final List<IntegerConfig> integerConfigs = new ArrayList();
+	private static final List<LongConfig> longConfigs = new ArrayList();
 	private static final Map<String, Integer> integers = new THashMap<String, Integer>();
+	private static final Map<String, Long> longs = new THashMap<String, Long>();
 
 	/*
 	 * public static int calculatorEnergy; public static int craftingEnergy; public static int scientificEnergy; public static int terrainEnergy; public static int advancedEnergy; public static int moduleEnergy; public static int cubeEnergy; public static int starchRF; public static int redstoneRF; public static int glowstoneRF; public static int conductorRF; public static int weatherstationRF; public static int growthRF; public static int buildRF; public static int farmlandRF; public static int waterRF; public static int plantRF;
@@ -37,11 +39,20 @@ public class CalculatorConfig extends Calculator {
 	public static void addInteger(String name, String usageType, int min, int defaultValue, int max, boolean useBoth) {
 		integerConfigs.add(new IntegerConfig(name, usageType, min, defaultValue, max, useBoth));
 	}
+	
+	//TODO switch to generics instead
+	public static void addLong(String name, String usageType, long min, long defaultValue, long max, boolean useBoth) {
+		longConfigs.add(new LongConfig(name, usageType, min, defaultValue, max, useBoth));
+	}
 
 	public static int getInteger(String name) {
 		return integers.get(name);
 	}
 
+	public static long getLong(String name) {
+		return longs.get(name);
+	}
+	
 	public static class IntegerConfig {
 		public String name, usageType;
 		public int min, defaultValue, max;
@@ -60,16 +71,35 @@ public class CalculatorConfig extends Calculator {
 			return useBoth;
 		}
 	}
+	
+	public static class LongConfig {
+		public String name, usageType;
+		public long min, defaultValue, max;
+		public boolean useBoth;
+
+		public LongConfig(String name, String usageType, long defaultValue, long min, long max, boolean useBoth) {
+			this.name = name;
+			this.usageType = usageType;
+			this.defaultValue = defaultValue;
+			this.min = min;
+			this.max = max;
+			this.useBoth = useBoth;
+		}
+
+		public boolean useBoth() {
+			return useBoth;
+		}
+	}
 
 	public static void initConfiguration(FMLPreInitializationEvent event) {
-		registerInteger();
+		registerNumeric();
 		loadMainConfig();
 		loadAtomicBlacklist();
 		loadBlocks();
 		loadItems();
 	}
 
-	public static void registerInteger() {
+	public static void registerNumeric() {
 		addInteger("Calculator", "Energy Storage", 1000, 10, 50000, false);
 		addInteger("Crafting Calculator", "Energy Storage", 5000, 10, 50000, false);
 		addInteger("Scientific Calculator", "Energy Storage", 2000, 10, 50000, false);
@@ -115,7 +145,8 @@ public class CalculatorConfig extends Calculator {
 		addInteger("Processing Chamber", "Energy Usage", 1000, 1, 50000, true);
 		addInteger("Processing Chamber", "Base Speed", 500, 20, 10000, true);		
 		
-
+		addLong("Total Energy Usage (if total/speed > MaxInt then capped at MaxInt energy per tick)", "Atomic Multiplier", 1, 1500000000, Long.MAX_VALUE, true);
+		addLong("Base Speed", "Atomic Multiplier", 20, 1000, 50000, true);
 	}
 
 	public static void loadMainConfig() {
@@ -128,6 +159,15 @@ public class CalculatorConfig extends Calculator {
 				name = name + usageConfig.usageType;
 			}
 			integers.put(name, usage);
+		}
+		//TODO fix reading as float band aid
+		for (LongConfig usageConfig : longConfigs) {
+			long usage = (long) config.getFloat(usageConfig.name, usageConfig.usageType, usageConfig.defaultValue, usageConfig.min, usageConfig.max, usageConfig.name);
+			String name = usageConfig.name;
+			if (usageConfig.useBoth()) {
+				name = name + usageConfig.usageType;
+			}
+			longs.put(name, usage);
 		}
 		timeEffect = config.getBoolean("Locator Can Change Time", "settings", true, "Calculator Locator");
 		beamEffect = config.getBoolean("Locator has a beam", "settings", true, "Calculator Locator");
