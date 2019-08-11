@@ -98,6 +98,12 @@ public class CalculatorConfig extends Calculator {
 		loadBlocks();
 		loadItems();
 	}
+	
+	public final static String multiplierCategory = "Atomic Multiplier";
+	public final static String multiplierTotalEnergyMsg = "Total Process Energy Usage (if total / speed > MaxInt then capped at MaxInt energy per tick)";
+	public final static String multiplierProcessTimeMsg = "Process Time (ticks)";
+	public final static String multiplierEnergyStorageMsg = "Energy Storage (will be raised to total / speed if lower than that)";
+	
 
 	public static void registerNumeric() {
 		addInteger("Calculator", "Energy Storage", 1000, 10, 50000, false);
@@ -145,8 +151,9 @@ public class CalculatorConfig extends Calculator {
 		addInteger("Processing Chamber", "Energy Usage", 1000, 1, 50000, true);
 		addInteger("Processing Chamber", "Base Speed", 500, 20, 10000, true);		
 		
-		addLong("Total Energy Usage (if total/speed > MaxInt then capped at MaxInt energy per tick)", "Atomic Multiplier", 1, 1500000000, Long.MAX_VALUE, true);
-		addLong("Base Speed", "Atomic Multiplier", 20, 1000, 50000, true);
+		addLong(multiplierTotalEnergyMsg, multiplierCategory, 1500000000, 1, Long.MAX_VALUE, true);
+		addLong(multiplierProcessTimeMsg, multiplierCategory, 1000, 20, 50000, true);
+		addInteger(multiplierEnergyStorageMsg, multiplierCategory, 1500000000, 1, Integer.MAX_VALUE, false);
 	}
 
 	public static void loadMainConfig() {
