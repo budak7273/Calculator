@@ -6,6 +6,7 @@ import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import sonar.calculator.mod.Calculator;
+import sonar.calculator.mod.CalculatorConfig;
 import sonar.calculator.mod.api.machines.IProcessMachine;
 import sonar.calculator.mod.utils.AtomicMultiplierBlacklist;
 import sonar.core.common.tileentity.TileEntityInventoryReceiver;
@@ -19,15 +20,21 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class TileEntityAtomicMultiplier extends TileEntityInventoryReceiver implements ISidedInventory, IProcessMachine {
 
 	public int cookTime, active;
-	public int furnaceSpeed = 1000;
-	public static long requiredEnergy = 15000000000l; //15 billion -> 15mRF/t
+	public int furnaceSpeed = CalculatorConfig.getInteger(CalculatorConfig.multiplierProcessTimeMsg + CalculatorConfig.multiplierCategory);
+	public static long requiredEnergy = CalculatorConfig.getLong(CalculatorConfig.multiplierTotalEnergyMsg + CalculatorConfig.multiplierCategory);
 
 	private static final int[] input = new int[] { 0 };
 	private static final int[] circuits = new int[] { 1, 2, 3, 4, 5, 6, 7 };
 	private static final int[] output = new int[] { 8 };
 
 	public TileEntityAtomicMultiplier() {
-		super.storage = new SyncEnergyStorage(1500000000, 1500000000);
+		int configCapacity = CalculatorConfig.getInteger(CalculatorConfig.multiplierEnergyStorageMsg + CalculatorConfig.multiplierCategory);
+		
+		if (configCapacity < (int) getEnergyUsage()) { //ensure that the machine can store at least one tick of energy usage regardless of config
+			super.storage = new SyncEnergyStorage((int) getEnergyUsage(), (int) requiredEnergy);
+		} else {
+			super.storage = new SyncEnergyStorage(configCapacity, (int) requiredEnergy);
+		}
 		super.slots = new ItemStack[10];
 	}
 
