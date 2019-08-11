@@ -153,7 +153,7 @@ public class CalculatorConfig extends Calculator {
 		
 		addLong(multiplierTotalEnergyMsg, multiplierCategory, 1500000000, 1, Long.MAX_VALUE, true);
 		addInteger(multiplierProcessTimeMsg, multiplierCategory, 1000, 20, 50000, true);
-		addInteger(multiplierEnergyStorageMsg, multiplierCategory, 1500000000, 1, Integer.MAX_VALUE, false);
+		addInteger(multiplierEnergyStorageMsg, multiplierCategory, 1500000000, 1, Integer.MAX_VALUE, true);
 	}
 
 	public static void loadMainConfig() {
