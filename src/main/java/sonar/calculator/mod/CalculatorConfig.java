@@ -36,13 +36,13 @@ public class CalculatorConfig extends Calculator {
 	public static Property blocksblackList;
 	public static Property itemsblackList;
 
-	public static void addInteger(String name, String usageType, int min, int defaultValue, int max, boolean useBoth) {
-		integerConfigs.add(new IntegerConfig(name, usageType, min, defaultValue, max, useBoth));
+	public static void addInteger(String name, String usageType, int defaultValue, int min, int max, boolean useBoth) {
+		integerConfigs.add(new IntegerConfig(name, usageType, defaultValue, min, max, useBoth));
 	}
 	
 	//TODO switch to generics instead
-	public static void addLong(String name, String usageType, long min, long defaultValue, long max, boolean useBoth) {
-		longConfigs.add(new LongConfig(name, usageType, min, defaultValue, max, useBoth));
+	public static void addLong(String name, String usageType, long defaultValue, long min, long max, boolean useBoth) {
+		longConfigs.add(new LongConfig(name, usageType, defaultValue, min, max, useBoth));
 	}
 
 	public static int getInteger(String name) {
