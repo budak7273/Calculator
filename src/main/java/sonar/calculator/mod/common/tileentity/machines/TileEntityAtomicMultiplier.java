@@ -211,7 +211,7 @@ public class TileEntityAtomicMultiplier extends TileEntityInventoryReceiver impl
 	public List<String> getWailaInfo(List<String> currenttip){
 		super.getWailaInfo(currenttip);
 		if (cookTime > 0) {
-			String active = FontHelper.translate("locator.state") + ":" + FontHelper.translate("locator.active");
+			String active = FontHelper.translate("locator.state") + ":" + FontHelper.translate("locator.active") + "(" + cookTime + " / " + furnaceSpeed + " ticks)";
 			currenttip.add(active);
 		} else {
 			String idle = FontHelper.translate("locator.state") + ":" + FontHelper.translate("locator.idle");
