@@ -2,6 +2,8 @@ package sonar.calculator.mod.common.tileentity.machines;
 
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -28,10 +30,12 @@ public class TileEntityAtomicMultiplier extends TileEntityInventoryReceiver impl
 	private static final int[] output = new int[] { 8 };
 
 	public TileEntityAtomicMultiplier() {
+		//LogManager.getLogger().error("Hello QuantumIndustries!");
 		int configCapacity = CalculatorConfig.getInteger(CalculatorConfig.multiplierEnergyStorageMsg + CalculatorConfig.multiplierCategory);
 		
-		if (configCapacity < (int) getEnergyUsage()) { //ensure that the machine can store at least one tick of energy usage regardless of config
-			super.storage = new SyncEnergyStorage((int) getEnergyUsage(), (int) requiredEnergy);
+		if (configCapacity < (int) getEnergyUsage()) { //ensure that the machine can store at least one tick's worth of energy usage regardless of config
+			super.storage = new SyncEnergyStorage((int) (getEnergyUsage() + 1), (int) requiredEnergy);
+			LogManager.getLogger().error("Atomic Multiplier energy storage is less than required to operate; raising storage to allow operation.");
 		} else {
 			super.storage = new SyncEnergyStorage(configCapacity, (int) requiredEnergy);
 		}
@@ -228,7 +232,12 @@ public class TileEntityAtomicMultiplier extends TileEntityInventoryReceiver impl
 
 	@Override
 	public double getEnergyUsage() {
-		return (requiredEnergy * 1.0) / getProcessTime();
+		double usage = (requiredEnergy * 1.0) / getProcessTime();
+		if ((int) (usage) >= Integer.MAX_VALUE) {//if energy usage is max integer, lower by one so that the machine can still run since buffer will also probably be max integer
+			//usage = Integer.MAX_VALUE; // - 1;
+			LogManager.getLogger().error("Atomic Multiplier Energy usage per tick is higher than maxint; returning maxint instead");
+		}
+		return usage;
 	}
 
 	@Override
