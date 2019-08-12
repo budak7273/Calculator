@@ -38,11 +38,13 @@ public class TileEntityCalculatorLocator extends TileEntityInventorySender imple
 	public SyncTagType.INT stability = new SyncTagType.INT("stability");
 	public SyncTagType.STRING owner = (STRING) new SyncTagType.STRING("owner").setDefault("None");
 	private int sizeTicks, luckTicks;
+	
+	public static double configMultiplier = CalculatorConfig.getDouble(CalculatorConfig.locatorCategory + CalculatorConfig.locatorOutputMultiplierMsg);
 
 	public TileEntityCalculatorLocator() {
-		super.storage = new SyncEnergyStorage(25000000, 128000);
+		super.storage = new SyncEnergyStorage((int) (configMultiplier * 25000000), (int) (configMultiplier * 128000));
 		super.slots = new ItemStack[2];
-		super.maxTransfer = 100000;
+		super.maxTransfer = (int) (configMultiplier * 100000);
 	}
 
 	@Override
@@ -80,7 +82,7 @@ public class TileEntityCalculatorLocator extends TileEntityInventorySender imple
 		int size = this.size.getObject();
 		if (size != 0 && (((int) (2 * size + 1) * (2 * size + 1)) - 1) != 0) {
 			int stable = (int) (stability.getObject() * 100) / ((int) (2 * size + 1) * (2 * size + 1));
-			return (int)(((5 + ((int) (1000 * (Math.sqrt(size * 1.8)) - 100 * (Math.sqrt(100 - stable))) / (int) (11 - Math.sqrt(stable))) * size))*2);
+			return (int)(configMultiplier * (((5 + ((int) (1000 * (Math.sqrt(size * 1.8)) - 100 * (Math.sqrt(100 - stable))) / (int) (11 - Math.sqrt(stable))) * size))*2));
 		}
 		return 0;
 	}

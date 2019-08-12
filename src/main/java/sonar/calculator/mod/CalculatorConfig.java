@@ -20,8 +20,11 @@ public class CalculatorConfig extends Calculator {
 
 	private static final List<IntegerConfig> integerConfigs = new ArrayList();
 	private static final List<LongConfig> longConfigs = new ArrayList();
+	private static final List<DoubleConfig> doubleConfigs = new ArrayList();
+	
 	private static final Map<String, Integer> integers = new THashMap<String, Integer>();
 	private static final Map<String, Long> longs = new THashMap<String, Long>();
+	private static final Map<String, Double> doubles = new THashMap<String, Double>();
 
 	/*
 	 * public static int calculatorEnergy; public static int craftingEnergy; public static int scientificEnergy; public static int terrainEnergy; public static int advancedEnergy; public static int moduleEnergy; public static int cubeEnergy; public static int starchRF; public static int redstoneRF; public static int glowstoneRF; public static int conductorRF; public static int weatherstationRF; public static int growthRF; public static int buildRF; public static int farmlandRF; public static int waterRF; public static int plantRF;
@@ -44,6 +47,10 @@ public class CalculatorConfig extends Calculator {
 	public static void addLong(String name, String usageType, long defaultValue, long min, long max, boolean useBoth) {
 		longConfigs.add(new LongConfig(name, usageType, defaultValue, min, max, useBoth));
 	}
+	
+	public static void addDouble(String name, String usageType, double defaultValue, double min, double max, boolean useBoth) {
+		doubleConfigs.add(new DoubleConfig(name, usageType, defaultValue, min, max, useBoth));
+	}
 
 	public static int getInteger(String name) {
 		return integers.get(name);
@@ -51,6 +58,10 @@ public class CalculatorConfig extends Calculator {
 
 	public static long getLong(String name) {
 		return longs.get(name);
+	}
+	
+	public static double getDouble(String name) {
+		return doubles.get(name);
 	}
 	
 	public static class IntegerConfig {
@@ -90,6 +101,25 @@ public class CalculatorConfig extends Calculator {
 			return useBoth;
 		}
 	}
+	
+	public static class DoubleConfig {
+		public String name, usageType;
+		public double min, defaultValue, max;
+		public boolean useBoth;
+
+		public DoubleConfig(String name, String usageType, double defaultValue, double min, double max, boolean useBoth) {
+			this.name = name;
+			this.usageType = usageType;
+			this.defaultValue = defaultValue;
+			this.min = min;
+			this.max = max;
+			this.useBoth = useBoth;
+		}
+
+		public boolean useBoth() {
+			return useBoth;
+		}
+	}
 
 	public static void initConfiguration(FMLPreInitializationEvent event) {
 		registerNumeric();
@@ -104,6 +134,8 @@ public class CalculatorConfig extends Calculator {
 	public final static String multiplierProcessTimeMsg = "Process Time (ticks)";
 	public final static String multiplierEnergyStorageMsg = "Energy Storage (will be raised to total / speed if lower than that)";
 	
+	public final static String locatorCategory = "Locator Energy Generation Multiplier (this * regular = generated)";
+	public final static String locatorOutputMultiplierMsg = "Generation";
 
 	public static void registerNumeric() {
 		addInteger("Calculator", "Energy Storage", 1000, 10, 50000, false);
@@ -126,6 +158,8 @@ public class CalculatorConfig extends Calculator {
 		addInteger("Scarecrow Tick Rate", "Scarecrow", 500, 1, 10000, false);
 		addInteger("Scarecrow Range", "Scarecrow", 3, 1, 25, false);
 		addInteger("Weather Controller", "Energy Usage", 250000, 1, 1000000, false);
+		
+		addDouble(locatorCategory, locatorOutputMultiplierMsg, 1.0, 0.001, 1000.0, true);
 		
 		addInteger("Reinforced Furnace", "Energy Usage", 500, 1, 50000, true);
 		addInteger("Reinforced Furnace", "Base Speed", 200, 20, 10000, true);
@@ -176,6 +210,15 @@ public class CalculatorConfig extends Calculator {
 			}
 			longs.put(name, usage);
 		}
+		for (DoubleConfig usageConfig : doubleConfigs) {
+			double usage = (double) config.getFloat(usageConfig.name, usageConfig.usageType, (float) usageConfig.defaultValue, (float)usageConfig.min, (float)usageConfig.max, usageConfig.name);
+			String name = usageConfig.name;
+			if (usageConfig.useBoth()) {
+				name = name + usageConfig.usageType;
+			}
+			doubles.put(name, usage);
+		}
+		
 		timeEffect = config.getBoolean("Locator Can Change Time", "settings", true, "Calculator Locator");
 		beamEffect = config.getBoolean("Locator has a beam", "settings", true, "Calculator Locator");
 		enableWaila = config.getBoolean("enable Waila integration", "api", true, "Waila");
