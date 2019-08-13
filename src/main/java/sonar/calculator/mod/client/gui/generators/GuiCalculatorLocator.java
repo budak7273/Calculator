@@ -5,6 +5,7 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
 
+import org.apache.logging.log4j.LogManager;
 import org.lwjgl.opengl.GL11;
 
 import sonar.calculator.mod.common.containers.ContainerCalculatorLocator;
@@ -40,8 +41,12 @@ public class GuiCalculatorLocator extends GuiContainer {
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		Minecraft.getMinecraft().getTextureManager().bindTexture(bground);
 		drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 0, this.xSize, this.ySize);
-		int k = this.entity.storage.getEnergyStored() * 78 / 25000000;
+		//LogManager.getLogger().error("Locator stored: 78 * (" + this.entity.storage.getEnergyStored() + " / max " + this.entity.storage.getMaxEnergyStored() + ")");
+		//int k = this.entity.storage.getEnergyStored() * 78 / 25000000;
+		int k = (int)(78 * (1.0 * this.entity.storage.getEnergyStored() / this.entity.storage.getMaxEnergyStored()));
+		//LogManager.getLogger().error("Which makes k " + k);
 		int j = 78 - k;
+		//LogManager.getLogger().error("And j  " + j);
 		drawTexturedModalRect(this.guiLeft + 49, this.guiTop + 63, 176, 0, k, 10);
 	}
 

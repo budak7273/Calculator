@@ -9,6 +9,7 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
 
+import org.apache.logging.log4j.LogManager;
 import org.lwjgl.opengl.GL11;
 
 import sonar.calculator.mod.common.containers.ContainerAtomicMultiplier;
@@ -48,10 +49,15 @@ public class GuiAtomicMultiplier extends GuiSonar {
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float var1, int var2, int var3) {
 		super.drawGuiContainerBackgroundLayer(var1, var2, var3);
-		int changedEnergy = this.entity.storage.getEnergyStored() / 100000;
-		int newEnergy = changedEnergy * 126 / 15000;
-		drawTexturedModalRect(this.guiLeft + 41, this.guiTop + 65, 0, 166, newEnergy, 10);
-
+		//int changedEnergy = this.entity.storage.getEnergyStored() / 100000;
+		//int newEnergy = changedEnergy * 126 / 15000;
+		//drawTexturedModalRect(this.guiLeft + 41, this.guiTop + 65, 0, 166, newEnergy, 10);
+		
+		int changedEnergy = (int)(126 * (1.0 * this.entity.storage.getEnergyStored() / this.entity.storage.getMaxEnergyStored()));
+		drawTexturedModalRect(this.guiLeft + 41, this.guiTop + 65, 0, 166, changedEnergy, 10);
+		//LogManager.getLogger().error("Multiplier stored: 126 * (" + this.entity.storage.getEnergyStored() + " / max " + this.entity.storage.getMaxEnergyStored() + ")");
+		//LogManager.getLogger().error("Which makes changedEnergy " + changedEnergy);
+		
 		int c = this.entity.cookTime * 18 / this.entity.furnaceSpeed;
 		drawTexturedModalRect(this.guiLeft + 79, this.guiTop + 20, 176, 0, c, 9);
 	}
